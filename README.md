@@ -31,8 +31,8 @@ Feel free to contribute
 If you want to help me develop more projects like this, please donate
 | Donate | Wallet |
 | ------ | ------ |
-| Bitcoin | 1ASiox2noQUBrobaN61KStPLmDFeRWNsmh |
-| Monero | 47RMsouU82E7Vk68YZyg7qC14nWhNhoEHGFhhUBa1n686fTLj2fbFRqgA3sZbU2JTm8CzzwUfcqSWPFPhsD9DxVT7QTYQXe |
+| Bitcoin | 1ASiox2noQUBrobaN61KStPLmDFeRWNsmh[BITCOIN] |
+| Monero | 47RMsouU82E7Vk68YZyg7qC14nWhNhoEHGFhhUBa1n686fTLj2fbFRqgA3sZbU2JTm8CzzwUfcqSWPFPhsD9DxVT7QTYQXe[MONERO] |
 
 
    [NGINX]: <https://www.nginx.com/>
