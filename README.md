@@ -13,7 +13,7 @@ $ curl -L https://raw.githubusercontent.com/ZenJB/LEMP-Installer/master/LEMPInst
 
 ### What will install
 
-| Package | README |
+| Package | Website |
 | ------ | ------ |
 | Nginx | [www.nginx.com][NGINX] |
 | PHP | [php.net][PHP] |

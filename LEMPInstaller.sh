@@ -8,12 +8,26 @@ azul=`tput setaf 4`
 branco=`tput setaf 7`
 reset=`tput sgr0`
 fundoBranco=`tput setab 7`
+fundoVerde=`tput setab 2`
 #Fim das cores para o Texto
-echo "${verde}==============================================="
-echo "${verde}===${azul}          LAMP Installer V0.0.1          ${verde}==="
-echo "${verde}===${cyan} Description: ${branco}Installs LAMP Web Server ${verde}  ==="
-echo "${verde}===${cyan} Author:      ${branco}ZenJB                    ${verde}  ==="
-echo "${verde}==============================================="
+#Inicio das Funcoes
+reloadNginx(){
+	if nginx -t >/dev/null
+	then
+		service nginx reload >/dev/null
+		echo "${cyan}Nginx reloaded!${reset}"
+	else
+		echo "${vermelho}Setup was not finished${reset}"
+		exit
+	fi
+}
+#Fim das Funcoes
+echo "${fundoVerde}                                               ${reset}"
+echo "${fundoVerde}   ${azul}${fundoBranco}          LAMP Installer V0.0.1          ${fundoVerde}   ${reset}"
+echo "${fundoVerde}                                               ${reset}"
+echo "${fundoVerde}   ${reset}${cyan} Description: ${branco}Installs LAMP Web Server   ${fundoVerde}   ${reset}"
+echo "${fundoVerde}   ${reset}${cyan} Author:      ${branco}ZenJB                      ${fundoVerde}   ${reset}"
+echo "${fundoVerde}                                               ${reset}"
 echo "${reset}"
 if [ "$EUID" -ne 0 ]
 then
@@ -65,17 +79,10 @@ else
 			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Lets Setup Nginx!' 10 40
 			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Now set server_tokens off;' 10 40
 			nano /etc/nginx/nginx.conf
+			reloadNginx
 			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Now set error_page 401 403 404 /404.html; (Must be inside seerver{})' 10 40
 			nano /etc/nginx/sites-enabled/default
-			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Press OK to reload nginx' 10 40
-			if nginx -t >/dev/null
-			then
-				service nginx reload >/dev/null
-				echo "${cyan}Nginx reloaded!${reset}"
-			else
-				echo "${vermelho}Setup was not finished${reset}"
-                        	exit
-			fi
+			reloadNginx
 			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Lets Setup PHP!' 10 40
 			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Set cgi.fix_pathinfo=0' 10 40
 			nano /etc/php/7.0/fpm/php.ini
