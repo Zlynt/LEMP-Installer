@@ -28,17 +28,17 @@ else
 	if apt-get update >/dev/null
 	then
 		echo "${cyan}Upgrading all packages...${reset}"
-		if apt-get dist-upgrade >/dev/null
+		if apt-get --yes dist-upgrade >/dev/null
 		then
 			echo "${cyan}Installing Whiptail..."
-			apt-get install whiptail
+			apt-get --yes install whiptail
 			echo "${cyan}Launching interface...${reset}"
 		#Interface
 		whiptail --backtitle 'LEMP Installer' --title 'Welcome' --msgbox 'This script will install Nginx,MySQL and PHP on Linux' 10 40
 		if (whiptail --backtitle 'LEMP Installer' --title 'Setup' --yesno 'Proceed with the installation?' 10 40)
 		then
 			echo "${cyan}Installing Nginx...${reset}"
-			if apt-get install nginx
+			if apt-get --yes install nginx
 			then
 				echo "${cyan}Installed!"
 			else
@@ -46,7 +46,7 @@ else
 				exit
 			fi
 			echo "${cyan}Installing MySQL...${reset}"
-			if apt-get install mysql-server
+			if apt-get --yes install mysql-server
                         then
                                 echo "${cyan}Installed!"
                         else
@@ -54,7 +54,7 @@ else
                                 exit
                         fi
 			echo "${cyan}Installing PHP...${reset}"
-                        if apt-get install php-fpm php-mysql
+                        if apt-get --yes install php-fpm php-mysql
                         then
                                 echo "${cyan}Installed!"
                         else
