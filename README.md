@@ -26,11 +26,6 @@ Want to contribute? Great!
 
 Feel free to contribute
 
-### Donate
-
-If you want to help me develop more projects like this, please donate.
-
-
    [NGINX]: <https://www.nginx.com/>
    [PHP]: <https://php.net/>
    [MYSQL]: <https://www.mysql.com/>
