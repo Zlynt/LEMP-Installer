@@ -35,90 +35,176 @@ then
 	echo "${reset}"
 	exit
 else
-	echo "${cyan}Script is running under root user.${reset}"
-	echo "${cyan}Cleaning packages list...${reset}"
-	apt-get clean
-	echo "${cyan}Updating packages list...${reset}"
-	if apt-get update >/dev/null
+	echo "${cyan}Cleaning package list.${reset}"
+	if ! apt-get clean >/dev/null
 	then
-		echo "${cyan}Upgrading all packages...${reset}"
-		if apt-get --yes dist-upgrade >/dev/null
-		then
-			echo "${cyan}Installing Whiptail..."
-			apt-get --yes install whiptail
-			echo "${cyan}Launching interface...${reset}"
-		#Interface
-		whiptail --backtitle 'LEMP Installer' --title 'Welcome' --msgbox 'This script will install Nginx,MySQL and PHP on Linux' 10 40
-		if (whiptail --backtitle 'LEMP Installer' --title 'Setup' --yesno 'Proceed with the installation?' 10 40)
-		then
-			echo "${cyan}Installing Nginx...${reset}"
-			if apt-get --yes install nginx
-			then
-				echo "${cyan}Installed!"
-			else
-				echo  "${vermelho}Cannot install Nginx!"
-				exit
-			fi
-			echo "${cyan}Installing MySQL...${reset}"
-			if apt-get --yes install mysql-server
-                        then
-                                echo "${cyan}Installed!"
-                        else
-                                echo  "${vermelho}Cannot install MySQL Server!"
-                                exit
-                        fi
-			echo "${cyan}Installing PHP...${reset}"
-                        if apt-get --yes install php-fpm php-mysql
-                        then
-                                echo "${cyan}Installed!"
-                        else
-                                echo  "${vermelho}Cannot install PHP!"
-                                exit
-                        fi
-			whiptail --backtitle 'LEMP Installer' --title 'Setup' --msgbox 'All packages have been installed. Now we will setup LEMP' 10 40
-			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Lets Setup Nginx!' 10 40
-			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Now set server_tokens off;' 10 40
-			nano /etc/nginx/nginx.conf
-			reloadNginx
-			whiptail --backtitle 'LEMP Installer' --title 'Nginx' --msgbox 'Now set error_page 401 403 404 /404.html; (Must be inside seerver{})' 10 40
-			nano /etc/nginx/sites-enabled/default
-			reloadNginx
-			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Lets Setup PHP!' 10 40
-			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Set cgi.fix_pathinfo=0' 10 40
-			nano /etc/php/7.0/fpm/php.ini
-			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Now add index.php between index and index.html' 10 40
-			nano /etc/nginx/sites-available/default
-			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Now add location ~ \.php$ {include snippets/fastcgi-php.conf;fastcgi_pass unix:/run/php/php7.0-fpm.sock;}' 10 40
-			nano /etc/nginx/sites-available/default
-			whiptail --backtitle 'LEMP Installer' --title 'PHP' --msgbox 'Now add location ~ /\.ht {deny all;}' 10 40
-			nano /etc/nginx/sites-available/default
-			whiptail --backtitle 'LEMP Installer' --title 'Nginx and PHP' --msgbox 'Reloading Nginx and PHP' 10 40
-			if nginx -t >/dev/null
-                        then
-                                service nginx reload >/dev/null
-                                echo "${cyan}Nginx reloaded!${reset}"
-				systemctl restart php7.0-fpm
-				echo "${cyan}PHP Restarted!${reset}"
-                        else
-                                echo "${vermelho}Setup was not finished${reset}"
-                                exit
-                        fi
-			whiptail --backtitle 'LEMP Installer' --title 'MySQL Server' --msgbox 'Setup a password for root user and answer y to all other questions.' 10 40
-			mysql_secure_installation
-			whiptail --backtitle 'LEMP Installer' --title 'LEMP' --msgbox 'Installation has finished!' 10 40
-			whiptail --backtitle 'LEMP Installer' --title 'Credits' --msgbox 'Script made by ZenJB' 10 40
-		else
-			echo "${vermelho}Setup was not finished${reset}"
-			exit
-		fi
-		else
-			echo "${vermelho}[ERROR] Unable to update packages"
-´			exit
-		fi
+		echo "${vermelho}[ERROR] ${branco}Cannot clean correctly!${reset}"
+		exit 1
+	fi
+	echo "${cyan}Updating package list.${reset}"
+	if ! apt-get update >/dev/null
+	then
+		echo "${vermelho}[ERROR] ${branco}Cannot update correctly!${reset}"
+		exit 1
+	fi
+	echo "${cyan}Upgrading all packages...${reset}"
+	if ! apt-get --yes dist-upgrade >/dev/null
+	then
+		echo "${vermelho}[ERROR] ${branco}Cannot Upgrade correctly!${reset}"
+		exit 1
+	fi
+	echo "${cyan}Installing Whiptail package.${reset}"
+	if apt-get --yes install whiptail > /dev/null
+	then
+		echo "${cyan}Done!${reset}"
 	else
-		echo "${vermelho}[ERROR] Unable to update package list"
+		echo "${vermelho}Cannot install WhipTail!${reset}"
+		exit
+	fi	
+	echo "${cyan}Launching interface...${reset}"
+	echo "${cyan}Everything is ready!${reset}"
+	whiptail --backtitle 'LEMP Installer' --title 'Welcome' --msgbox 'This script will install Nginx,MySQL and PHP on Linux' 10 40
+	if ! (whiptail --backtitle 'LEMP Installer' --title 'Setup' --yesno 'Do you want to install LEMP?' 10 40)
+	then
+		echo "${vermelho}LEMP was not installed!${reset}"
 		exit
 	fi
-	echo "${reset}"
-	exit
+
+	echo "${cyan}Installing required packaged..."		
+	echo "${cyan}Installing Nginx package...${reset}"
+	if apt-get --yes install nginx >/dev/null
+	then
+		echo "${cyan}Done!${reset}"
+	else
+		echo  "${vermelho}Cannot install Nginx!${reset}"
+		exit
+	fi
+	echo "${cyan}Installing MySQL package...${reset}"
+	if apt-get --yes install mysql-server >/dev/null
+        then
+               	echo "${cyan}Done!${reset}"
+        else
+               	echo  "${vermelho}Cannot install MySQL Server!${reset}"
+            	exit
+ 	fi
+	echo "${cyan}Installing PHP package...${reset}"
+        if apt-get --yes install php-fpm php-mysql >/dev/null
+        then
+               	echo "${cyan}Done!${reset}"
+        else
+               	echo  "${vermelho}Cannot install PHP!${reset}"
+               	exit
+        fi
+
+	#Set Server Tokens Off
+	echo "${cyan}Setting Server Tokens Off on Nginx...${reset}"
+	if ! replace "# server_tokens off;" "server_tokens off;" -- /etc/nginx/nginx.conf
+	then
+		echo "${vermelho}[ERROR] Cannot setup server tokens!${reset}"
+		exit
+	fi
+	echo "${cyan}Done!${reset}"
+	#Reload Nginx
+	echo "${cyan}Reloading Nginx...${reset}"
+	if ! nginx -t > /dev/null
+	then
+		echo "${vermelho}[ERROR] There is an syntax error on nginx.conf!${reset}"
+		exit
+	fi
+	reloadNginx > /dev/null
+	echo "${cyan}Setting up error page...${reset}"
+	replace "error_page 401 403 404 /404.html;" "" -- /etc/nginx/sites-enabled/default
+	replace "root /var/www/html;" "root /var/www/html; error_page 401 403 404 /404.html;" -- /etc/nginx/sites-enabled/default
+	echo "${cyan}Done!${reset}"
+
+	PHPINI=$(php --ini | grep /php.ini | grep -oP "/etc/.*")
+	PHPVERSION=$(php --ini | grep /php.ini | grep -oP "/etc/.*" | grep -Eo '[+-]?[0-9]+([.][0-9]+)?')
+	
+	replace ";cgi.fix_pathinfo=1" "cgi.fix_pathinfo=0" -- $PHPINI
+	echo "PHP Configurated!"
+	replace "index index.html index.htm index.nginx-debian.html;" "index index.php index.html index.htm;" -- /etc/nginx/sites-available/default
+
+	FASTCGI="#       fastcgi_pass unix:/var/run/php/php"
+	FASTCGI="$FASTCGI$PHPVERSION"
+	FASTCGIEND="-fpm.sock;"
+	FASTCGI="$FASTCGI$FASTCGIEND"
+	CLOSECHAR="}"
+	NEWFASTCGI=$(echo $FASTCGI | cut -d "#" -f 2)
+	
+	echo ""
+	echo ""
+	echo "${fundoVerde}=== Replace This ===${reset}"
+	echo "#location ~ \.php$ {"
+	echo "#       include snippets/fastcgi-php.conf;"
+        echo "#"
+        echo "#       # With php-fpm (or other unix sockets):"
+	echo "$FASTCGI"
+        echo "#       # With php-cgi (or other tcp sockets):"
+        echo "#       fastcgi_pass 127.0.0.1:9000;"
+        echo "#}"
+	echo "${fundoVerde}====================${reset}"
+	echo ""
+	echo "${fundoVerde}===   With This  ===${reset}"
+	echo "location ~ \.php$ {"
+	echo "       include snippets/fastcgi-php.conf;"
+        echo "#"
+        echo "#       # With php-fpm (or other unix sockets):"
+	echo "$NEWFASTCGI"
+        echo "#       # With php-cgi (or other tcp sockets):"
+        echo "#       fastcgi_pass 127.0.0.1:9000;"
+        echo "}"
+	echo "${fundoVerde}====================${reset}"
+	read -p "${azul}Press [ENTER] to open text editor.${reset}"
+	nano /etc/nginx/sites-available/default
+
+	echo ""
+	echo ""
+	echo "${fundoVerde}=== Replace This ===${reset}"
+	echo "#location ~ /\.ht {"
+        echo "#       deny all;"
+        echo "#}"
+	echo "${fundoVerde}====================${reset}"
+	echo ""
+	echo "===   With This  ==="
+	echo "location ~ /\.ht {"
+        echo "       deny all;"
+        echo "}"
+	echo "${fundoVerde}====================${reset}"
+	read -p "${azul}Press [ENTER] to open text editor.${reset}"
+	nano /etc/nginx/sites-available/default
+
+	if nginx -t >/dev/null
+        then
+		service nginx reload >/dev/null
+		echo "${cyan}Nginx reloaded!${reset}"
+		systemctl restart php7.0-fpm
+		echo "${cyan}PHP Restarted!${reset}"
+	else
+		echo "${vermelho}Setup was not finished${reset}"
+		exit
+	fi
+	whiptail --backtitle 'LEMP Installer' --title 'MySQL Server' --msgbox 'Setup a password for root user and answer y to all other questions.' 10 40
+	mysql_secure_installation
+	
+	echo 'Creating index page and error page...'
+	rm /var/www/html/index.nginx-debian.html
+	rm /var/www/html/index.html
+	rm /var/www/html/404.html
+	echo "<html><head><title>LEMP</title></head><body><h1>Welcome to LEMP</h1></body></html>" >> /var/www/html/index.html
+	echo "<html><head><title>LEMP</title></head><body><h1>Page not found</h1></body></html>" >> /var/www/html/404.html
+
+	ufwoff="Status: inactive"
+	ufw=$(ufw status)
+	if [ "$ufwoff" == "$ufw" ];
+	then
+		if (whiptail --backtitle 'LEMP Installer' --title 'Setup' --yesno 'Your firewall is offline. Do you want to enable it?' 10 40)
+		then
+			ufw enable
+		fi
+	fi
+	echo 'Adding firewall rules...'
+	ufw allow http
+
+	whiptail --backtitle 'LEMP Installer' --title 'LEMP' --msgbox 'You have finished installing and setting up LEMP!' 10 40
+	echo "Thank you for using this script"
 fi
